@@ -1,43 +1,44 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import ROUTES from "../app/routes";
-import { selectQuizzes } from "../features/quizzes/quizzesSlice";
-import { selectTopics } from "../features/topics/topicsSlice";
-import { addQuiz } from "../features/quizzes/quizzesSlice";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import ROUTES from '../app/routes';
+import { selectQuizzes } from '../features/quizzes/quizzesSlice';
+import { selectTopics } from '../features/topics/topicsSlice';
+import { addQuiz } from '../features/quizzes/quizzesSlice';
+import { addCard } from '../features/cards/cardsSlice';
 
 export default function NewQuizForm() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [cards, setCards] = useState([]);
-  const [topicId, setTopicId] = useState("");
+  const [topicId, setTopicId] = useState('');
   const navigate = useNavigate();
-  const topics = useSelector(selectTopics);  // Replace with topics 
+  const topics = useSelector(selectTopics);
   const dispatch = useDispatch();
-
-  // Remember, that action creator expects to receive a payload of the form { id: '123', name: 'quiz name', topicId: '456', cardIds: ['1', '2', '3', ...]}. You’ll have to generate an id by calling uuidv4. For now, pass the empty cardIds array variable for the cardIds property (you’ll change that in a later task).
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.length === 0) {
       return;
     }
-
     const cardIds = [];
 
-    // create the new cards here and add each card's id to cardIds
-    // create the new quiz here
+    cards.forEach((card) => {
+      const cardId = uuidv4();
+      cardIds.push(cardId);
+      dispatch(addCard({ ...card, id: cardId }));
+    });
 
     const quizId = uuidv4();
 
-   dispatch(addQuiz({ id: quizId, name, topicId, cardIds }));
+    dispatch(addQuiz({ id: quizId, name, topicId, cardIds }));
 
-    navigate(ROUTES.quizzesRoute())
+    navigate(ROUTES.quizzesRoute());
   };
 
   const addCardInputs = (e) => {
     e.preventDefault();
-    setCards(cards.concat({ front: "", back: "" }));
+    setCards(cards.concat({ front: '', back: '' }));
   };
 
   const removeCard = (e, index) => {
@@ -79,7 +80,7 @@ export default function NewQuizForm() {
               id={`card-front-${index}`}
               value={cards[index].front}
               onChange={(e) =>
-                updateCardState(index, "front", e.currentTarget.value)
+                updateCardState(index, 'front', e.currentTarget.value)
               }
               placeholder="Front"
             />
@@ -88,7 +89,7 @@ export default function NewQuizForm() {
               id={`card-back-${index}`}
               value={cards[index].back}
               onChange={(e) =>
-                updateCardState(index, "back", e.currentTarget.value)
+                updateCardState(index, 'back', e.currentTarget.value)
               }
               placeholder="Back"
             />

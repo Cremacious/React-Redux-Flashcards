@@ -1,26 +1,26 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import {v4 as uuidv4} from 'uuid';
+import { createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 export const topicsSlice = createSlice({
-    name: 'topics',
-    initialState: {
-        topics: {}
+  name: 'topics',
+  initialState: {
+    topics: {},
+  },
+  reducers: {
+    addTopic: (state, action) => {
+      const { name, icon } = action.payload;
+      const id = uuidv4();
+      state.topics[id] = {
+        id: id,
+        name: name,
+        icon: icon,
+        quizIds: [],
+      };
     },
-    reducers: {
-        addTopic: (state, action) => {
-            const {name, icon} = action.payload;
-            const id = uuidv4();
-            state.topics[id] = {
-                id: id,
-                name: name,
-                icon: icon,
-                quizIds: []
-            };
-        }
-    }
+  },
 });
 
-// export const {addTopic} = topicsSlice.actions;
+export const selectTopics = (state) => state.topics.topics;
 export default topicsSlice.reducer;
 
 // {
